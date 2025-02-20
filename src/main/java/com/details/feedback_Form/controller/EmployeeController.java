@@ -16,7 +16,6 @@ public class EmployeeController {
         this.employeeService = employeeService;
     }
 
-    // Accept JSON request body for login
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody EmployeeLoginRequest request) {
         Employee employee = employeeService.authenticateEmployee(request.getEmail(), request.getPassword());
