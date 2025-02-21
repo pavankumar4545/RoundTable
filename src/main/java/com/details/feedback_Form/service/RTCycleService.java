@@ -9,4 +9,5 @@ public interface RTCycleService {
     RTCycle getRTCycleById(Long id);
     RTCycle updateRTCycle(Long adminId, Long id, RTCycle updatedRTCycle);
     List<RTCycle> getAllRTCycles(Long adminId);
+    void deleteAll();
 }

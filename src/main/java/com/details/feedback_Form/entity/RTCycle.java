@@ -25,7 +25,8 @@ public class RTCycle {
     private int endYear;
 
     @Column(nullable = false, updatable = false)
-    private LocalDate createdAt;
+    private LocalDate createdAt = LocalDate.now();
+
 
     @PrePersist
     protected void onCreate() {

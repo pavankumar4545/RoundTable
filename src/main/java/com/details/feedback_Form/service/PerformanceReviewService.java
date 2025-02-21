@@ -1,7 +1,6 @@
 package com.details.feedback_Form.service;
 
 import com.details.feedback_Form.entity.Employee;
-import com.details.feedback_Form.entity.Feedback;
 import com.details.feedback_Form.entity.PerformanceReview;
 import com.details.feedback_Form.entity.RTCycle;
 import com.details.feedback_Form.repository.EmployeeRepository;
@@ -12,7 +11,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.Month;
-import java.util.List;
+import java.util.Optional;
+
 @Service
 public class PerformanceReviewService {
 
@@ -28,7 +28,6 @@ public class PerformanceReviewService {
     @Autowired
     private PerformanceReviewRepository performanceReviewRepository;
 
-    // Convert month name to month number
     private int getMonthNumber(String monthName) {
         try {
             return Month.valueOf(monthName.toUpperCase()).getValue();
@@ -37,8 +36,6 @@ public class PerformanceReviewService {
         }
     }
 
-    // Fetch review data with updated logic
-    // Fetch review data with updated logic
     public PerformanceReview getReviewData(Long employeeId) {
         Employee employee = employeeRepository.findById(employeeId)
                 .orElseThrow(() -> new RuntimeException("Employee not found"));
@@ -46,18 +43,20 @@ public class PerformanceReviewService {
         RTCycle cycle = rtCycleRepository.findAll().stream().findFirst()
                 .orElseThrow(() -> new RuntimeException("RT Cycle not found"));
 
-        // ⃣ Get feedback count directly from the Employee table
+        Optional<PerformanceReview> existingReview = performanceReviewRepository.findByEmployeeId(employeeId);
+        if (existingReview.isPresent()) {
+            System.out.println("Existing review found for Employee ID: " + employeeId);
+            return existingReview.get();
+        }
+
         int feedbackCount = employee.getFeedbackCount();
 
-        //  Calculate submission percentage based on 6 months
         int totalMonths = 6;
         double submissionPercentage = ((double) feedbackCount / totalMonths) * 100;
         boolean canSubmit = submissionPercentage >= 75;
 
-        // Set Performance Rating as Submission Percentage
         int performanceRating = (int) submissionPercentage;
 
-        // Create Performance Review
         PerformanceReview review = new PerformanceReview();
         review.setEmployee(employee);
         review.setName(employee.getName());
@@ -65,21 +64,22 @@ public class PerformanceReviewService {
         review.setStartYear(cycle.getStartYear());
         review.setEndMonth(cycle.getEndMonth());
         review.setEndYear(cycle.getEndYear());
-        review.setPerformanceRating(performanceRating);  // 🔑 Set submission percentage
+        review.setPerformanceRating(performanceRating);
         review.setSubmitEnabled(canSubmit);
 
-        //  Logs for Debugging
+        PerformanceReview savedReview = performanceReviewRepository.save(review);
+
         System.out.println("Feedback Submitted: " + feedbackCount);
         System.out.println("Submission Percentage: " + submissionPercentage + "%");
         System.out.println("Performance Rating: " + performanceRating);
+        System.out.println("Generated Review ID: " + savedReview.getId());
 
-        return review;
+        return savedReview;  // Ensure the ID is not null
     }
 
 
-    // Save review
+
     public PerformanceReview saveReview(PerformanceReview review) {
         return performanceReviewRepository.save(review);
     }
 }
-

@@ -19,7 +19,6 @@ public class RTCycleServiceImpl implements RTCycleService {
     @Autowired
     private AdminRepository adminRepository;
 
-    // ✅ Helper method for admin validation
     private void validateAdminAccess(Admin admin) {
         if (admin == null) {
             throw new IllegalArgumentException("Unauthorized: Admin not found.");
@@ -36,9 +35,10 @@ public class RTCycleServiceImpl implements RTCycleService {
         Admin admin = adminRepository.findById(adminId).orElse(null);
         validateAdminAccess(admin);
 
-        // ✅ Check if an RT Cycle already exists in the given range
+        // Ensure proper parameters are passed to check for overlapping RT cycles
         boolean exists = rtCycleRepository.existsOverlappingRTCycle(
-                rtCycle.getStartMonth(), rtCycle.getStartYear()
+                rtCycle.getStartMonth(), rtCycle.getStartYear(),
+                rtCycle.getEndMonth(), rtCycle.getEndYear()
         );
 
         if (exists) {
@@ -47,6 +47,7 @@ public class RTCycleServiceImpl implements RTCycleService {
 
         return rtCycleRepository.save(rtCycle);
     }
+
 
     @Override
     public RTCycle getCurrentRTCycle(Long adminId) {
@@ -80,5 +81,10 @@ public class RTCycleServiceImpl implements RTCycleService {
         Admin admin = adminRepository.findById(adminId).orElse(null);
         validateAdminAccess(admin);
         return rtCycleRepository.findAll();
+    }
+
+    @Override
+    public void deleteAll() {
+        rtCycleRepository.deleteAll();
     }
 }

@@ -4,5 +4,10 @@ import com.details.feedback_Form.entity.Employee;
 
 public interface EmployeeService {
     Employee authenticateEmployee(String email, String password);
+
+    Employee createEmployee(Employee employee);
+
+
+    Employee getEmployeeById(Long id);
 }
 

@@ -12,5 +12,5 @@ public interface FeedbackService {
     List<Feedback> getLastSixMonthsFeedback(Long employeeId);
     List<Feedback> getFeedbackByEmail(String email);
     boolean feedbackAlreadySubmitted(Long employeeId, String month, int year);
-
+    boolean canSubmitRTCycle(Long employeeId);  // New method to check if submit button should be enabled
 }

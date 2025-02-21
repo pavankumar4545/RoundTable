@@ -27,5 +27,23 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
         return null; // Login failed
     }
+
+    @Override
+    public Employee createEmployee(Employee employee) {
+        // Check if email already exists
+        Optional<Employee> existingEmployee = employeeRepository.findByEmail(employee.getEmail());
+        if (existingEmployee.isPresent()) {
+            throw new RuntimeException("Email already exists!");
+        }
+
+        // Save employee
+        return employeeRepository.save(employee);
+    }
+
+
+    @Override
+    public Employee getEmployeeById(Long id) {
+        return employeeRepository.findById(id).orElse(null);
+    }
 }
 

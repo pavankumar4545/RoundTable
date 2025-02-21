@@ -10,8 +10,11 @@ public interface RTCycleRepository extends JpaRepository<RTCycle, Long> {
     RTCycle findTopByOrderByIdDesc();  // Get the most recent RT Cycle
 
     @Query("SELECT COUNT(r) > 0 FROM RTCycle r WHERE " +
-            "(:startYear BETWEEN r.startYear AND r.endYear) " +
-            "AND (:startMonth BETWEEN r.startMonth AND r.endMonth)")
+            "(:startYear < r.endYear OR (:startYear = r.endYear AND :startMonth <= r.endMonth)) " +
+            "AND (:endYear > r.startYear OR (:endYear = r.startYear AND :endMonth >= r.startMonth))")
     boolean existsOverlappingRTCycle(@Param("startMonth") int startMonth,
-                                     @Param("startYear") int startYear);
+                                     @Param("startYear") int startYear,
+                                     @Param("endMonth") int endMonth,
+                                     @Param("endYear") int endYear);
+
 }

@@ -1,14 +1,10 @@
 package com.details.feedback_Form.entity;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "feedback")
-@Getter
-@Setter
 public class Feedback {
 
     @Id
@@ -23,6 +19,10 @@ public class Feedback {
 
     private String month;
     private int year;
+
+    @Column(name = "band_level", nullable = true)  // Allow null, but prefer non-null
+    private String bandLevel;
+
 
     // Fields for Band B6
     private Integer leadership;
@@ -51,12 +51,17 @@ public class Feedback {
     public Feedback() {
     }
 
-    public Feedback(Long id, Employee employee, String managerEmail, String month, int year, Integer leadership, Integer orgContribution, Integer assistingInPreSales, Integer timelyDeliveryB7, Integer codeQualityB7, Integer clientCommunication, Integer timelyDeliveryB8, Integer codeQualityB8, Integer improvement, String comment, String attachmentUrl, String status, LocalDate submissionDate) {
+    public Feedback(Long id, Employee employee, String managerEmail, String month, int year, String bandLevel,
+                    Integer leadership, Integer orgContribution, Integer assistingInPreSales,
+                    Integer timelyDeliveryB7, Integer codeQualityB7, Integer clientCommunication,
+                    Integer timelyDeliveryB8, Integer codeQualityB8, Integer improvement,
+                    String comment, String attachmentUrl, String status, LocalDate submissionDate) {
         this.id = id;
         this.employee = employee;
         this.managerEmail = managerEmail;
         this.month = month;
         this.year = year;
+        this.bandLevel = bandLevel;
         this.leadership = leadership;
         this.orgContribution = orgContribution;
         this.assistingInPreSales = assistingInPreSales;
@@ -110,6 +115,14 @@ public class Feedback {
 
     public void setYear(int year) {
         this.year = year;
+    }
+
+    public String getBandLevel() {
+        return bandLevel;
+    }
+
+    public void setBandLevel(String bandLevel) {
+        this.bandLevel = bandLevel;
     }
 
     public Integer getLeadership() {
@@ -216,5 +229,3 @@ public class Feedback {
         this.submissionDate = submissionDate;
     }
 }
-
-

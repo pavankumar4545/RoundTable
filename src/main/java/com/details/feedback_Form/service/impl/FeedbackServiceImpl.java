@@ -1,6 +1,8 @@
 package com.details.feedback_Form.service.impl;
 
+import com.details.feedback_Form.entity.Employee;
 import com.details.feedback_Form.entity.Feedback;
+import com.details.feedback_Form.repository.EmployeeRepository;
 import com.details.feedback_Form.repository.FeedbackRepository;
 import com.details.feedback_Form.service.EmailService;
 import com.details.feedback_Form.service.FeedbackService;
@@ -18,6 +20,9 @@ public class FeedbackServiceImpl implements FeedbackService {
     private FeedbackRepository feedbackRepository;
 
     @Autowired
+    private EmployeeRepository employeeRepository;
+
+    @Autowired
     private EmailService emailService;
 
     @Override
@@ -25,6 +30,13 @@ public class FeedbackServiceImpl implements FeedbackService {
     public Feedback submitFeedback(Feedback feedback) {
         feedback.setStatus("PENDING");
         Feedback savedFeedback = feedbackRepository.save(feedback);
+
+        // Increment feedback count for the employee
+        Employee employee = savedFeedback.getEmployee();
+        if (employee != null) {
+            employee.setFeedbackCount(employee.getFeedbackCount() + 1);
+            employeeRepository.save(employee);
+        }
 
         // Send email notification
         sendEmailNotification(savedFeedback);
@@ -42,7 +54,7 @@ public class FeedbackServiceImpl implements FeedbackService {
         feedbackRepository.save(feedback);
 
         // Send approval email
-        String subject = "Feedback Approved ✅";
+        String subject = "Feedback Approved ";
         String content = "Your feedback for " + feedback.getMonth() + " " + feedback.getYear() + " has been approved!";
         emailService.sendFeedbackEmail(feedback.getEmployee().getEmail(), "hr@company.com", subject, content);
 
@@ -59,7 +71,7 @@ public class FeedbackServiceImpl implements FeedbackService {
         feedbackRepository.save(feedback);
 
         // Send rejection email
-        String subject = "Feedback Rejected ❌";
+        String subject = "Feedback Rejected ";
         String content = "Your feedback for " + feedback.getMonth() + " " + feedback.getYear() + " was rejected.\nReason: " + reason;
         emailService.sendFeedbackEmail(feedback.getEmployee().getEmail(), "hr@company.com", subject, content);
 
@@ -70,6 +82,7 @@ public class FeedbackServiceImpl implements FeedbackService {
     public List<Feedback> getEmployeeFeedback(Long employeeId) {
         return feedbackRepository.findByEmployeeId(employeeId);
     }
+
 
     @Override
     public Feedback getFeedbackById(Long feedbackId) {
@@ -91,6 +104,14 @@ public class FeedbackServiceImpl implements FeedbackService {
     @Override
     public boolean feedbackAlreadySubmitted(Long employeeId, String month, int year) {
         return feedbackRepository.existsByEmployeeIdAndMonthAndYear(employeeId, month, year);
+    }
+
+    // New method to check if RT Cycle submit button should be enabled
+    @Override
+    public boolean canSubmitRTCycle(Long employeeId) {
+        Employee employee = employeeRepository.findById(employeeId)
+                .orElseThrow(() -> new RuntimeException("Employee not found"));
+        return employee.getFeedbackCount() >= 5;  // Enable if 5 or more feedbacks submitted
     }
 
     private void sendEmailNotification(Feedback feedback) {

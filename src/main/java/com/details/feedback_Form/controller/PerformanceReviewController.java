@@ -13,7 +13,6 @@ public class PerformanceReviewController {
     @Autowired
     private PerformanceReviewService reviewService;
 
-    // 1️⃣ Fetch the performance review data for an employee
     @GetMapping("/{employeeId}")
     public ResponseEntity<PerformanceReview> getReviewData(@PathVariable Long employeeId) {
         PerformanceReview review = reviewService.getReviewData(employeeId);

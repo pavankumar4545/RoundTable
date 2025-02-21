@@ -1,13 +1,12 @@
 package com.details.feedback_Form.entity;
 
-
 import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
 @Table(name = "employee")
-//@Getter @Setter @NoArgsConstructor @AllArgsConstructor
 public class Employee {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -27,64 +26,41 @@ public class Employee {
     @Column(nullable = false)
     private String password;
 
-    public Employee() {
-    }
+    @Column(nullable = false)
+    private int feedbackCount = 0;  // New field to count feedback submissions
 
-    public Employee(Long id, String email, String name, String role, String bandLevel, String password) {
+    public Employee() {}
+
+    public Employee(Long id, String email, String name, String role, String bandLevel, String password, int feedbackCount) {
         this.id = id;
         this.email = email;
         this.name = name;
         this.role = role;
         this.bandLevel = bandLevel;
         this.password = password;
+        this.feedbackCount = feedbackCount;
     }
 
-    public Long getId() {
-        return id;
-    }
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
 
-    public String getEmail() {
-        return email;
-    }
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
+    public String getRole() { return role; }
+    public void setRole(String role) { this.role = role; }
 
-    public String getName() {
-        return name;
-    }
+    public String getBandLevel() { return bandLevel; }
+    public void setBandLevel(String bandLevel) { this.bandLevel = bandLevel; }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
 
-    public String getRole() {
-        return role;
-    }
+    public int getFeedbackCount() { return feedbackCount; }
+    public void setFeedbackCount(int feedbackCount) { this.feedbackCount = feedbackCount; }
 
-    public void setRole(String role) {
-        this.role = role;
-    }
-
-    public String getBandLevel() {
-        return bandLevel;
-    }
-
-    public void setBandLevel(String bandLevel) {
-        this.bandLevel = bandLevel;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
+    public void incrementFeedbackCount() { this.feedbackCount++; }
 }
-

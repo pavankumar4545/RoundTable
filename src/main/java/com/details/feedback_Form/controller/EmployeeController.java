@@ -26,4 +26,27 @@ public class EmployeeController {
             return ResponseEntity.status(401).body("Invalid email or password");
         }
     }
+
+    @PostMapping("/create")
+    public ResponseEntity<?> createEmployee(@RequestBody Employee employee) {
+        // Ensure the role is always "employee"
+        employee.setRole("employee");
+
+        // Save the employee
+        Employee savedEmployee = employeeService.createEmployee(employee);
+
+        return ResponseEntity.ok().body("{\"message\": \"Employee created successfully!\"}");
+    }
+
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> getEmployeeById(@PathVariable Long id) {
+        Employee employee = employeeService.getEmployeeById(id);
+
+        if (employee != null) {
+            return ResponseEntity.ok(employee);
+        } else {
+            return ResponseEntity.status(404).body("Employee not found");
+        }
+    }
 }
