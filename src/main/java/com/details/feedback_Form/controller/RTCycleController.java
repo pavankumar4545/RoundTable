@@ -16,7 +16,6 @@ public class RTCycleController {
     @Autowired
     private RTCycleService rtCycleService;
 
-    // 🔒 CREATE RT CYCLE - Only ADMIN, HR, MANAGER can create
     @PostMapping("/create")
     public ResponseEntity<?> createRTCycle(@RequestHeader("adminId") Long adminId,
                                            @RequestBody RTCycle rtCycle) {
@@ -30,7 +29,6 @@ public class RTCycleController {
         }
     }
 
-    // 🔒 GET CURRENT RT CYCLE - Only ADMIN, HR, MANAGER can view
     @GetMapping("/current")
     public ResponseEntity<?> getCurrentRTCycle(@RequestHeader("adminId") Long adminId) {
         try {
@@ -41,7 +39,6 @@ public class RTCycleController {
         }
     }
 
-    // 🔒 UPDATE RT CYCLE
     @PutMapping("/{id}")
     public ResponseEntity<?> updateRTCycle(@RequestHeader("adminId") Long adminId,
                                            @PathVariable Long id,
@@ -54,7 +51,6 @@ public class RTCycleController {
         }
     }
 
-    // 🔒 GET ALL RT CYCLES
     @GetMapping("/all")
     public ResponseEntity<List<RTCycle>> getAllRTCycles(@RequestHeader("adminId") Long adminId) {
         return ResponseEntity.ok(rtCycleService.getAllRTCycles(adminId));
